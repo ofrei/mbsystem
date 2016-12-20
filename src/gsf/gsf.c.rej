@@ -1,0 +1,17 @@
+***************
+*** 256,262 ****
+      struct stat stbuf;
+      rc = stat(filename, &stbuf);
+  #else
+- #ifdef (defined __WINDOWS__) || (defined __MINGW32__)
+      struct _stati64    stbuf;
+      rc = _stati64(filename, &stbuf);
+  #else
+--- 256,262 ----
+      struct stat stbuf;
+      rc = stat(filename, &stbuf);
+  #else
++ #if defined(__WINDOWS__) || defined(__MINGW32__)
+      struct _stati64    stbuf;
+      rc = _stati64(filename, &stbuf);
+  #else

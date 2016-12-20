@@ -1,0 +1,65 @@
+***************
+*** 169,174 ****
+  #define OPTLK
+  #endif
+  
+  #ifdef __cplusplus
+  extern          "C"
+  {
+--- 169,187 ----
+  #define OPTLK
+  #endif
+  
++ #ifdef WIN32
++ #	define R_OK 04
++ #	define W_OK 02
++ #	define X_OK 01
++ #	define F_OK 00
++ #	ifndef __WINDOWS__			/* I, JL, understand nothing of this mess on the ways to detect if we are on Windows */
++ #		define __WINDOWS__
++ #	endif
++ #	ifndef _WIN32
++ #		define _WIN32
++ #	endif
++ #endif
++ 
+  #ifdef __cplusplus
+  extern          "C"
+  {
+***************
+*** 2856,2863 ****
+   *
+   ********************************************************************/
+  
+  /********************************************************************
+   *
+   * Function Name : gsfGetPositionDestination
+   *
+   * Description : compute a new position from an existing one.
+--- 2869,2894 ----
+   *
+   ********************************************************************/
+  
++ int gsfSetDefaultScaleFactor(gsfSwathBathyPing *mb_ping);
+  /********************************************************************
+   *
++  * Function Name : gsfSetDefaultScaleFactor
++  *
++  * Description : This function is used to estimate and set scale
++  *               factors for a ping record
++  *
++  * Inputs :
++  *    mb_ping - a pointer to a ping record.  The scale factors
++  *              will be set in this record.
++  *
++  * Returns : This function returns 0.
++  *
++  * Error Conditions : none
++  *
++  ********************************************************************/
++ 
++ /********************************************************************
++  *
+   * Function Name : gsfGetPositionDestination
+   *
+   * Description : compute a new position from an existing one.
