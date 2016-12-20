@@ -190,7 +190,7 @@ void *New_mbcontour_Ctrl (struct GMT_CTRL *GMT) {	/* Allocate and initialize a n
         int     dummyformat;
         int     dummypings;
 
-	Ctrl = GMT_memory (GMT, NULL, 1, struct MBCONTOUR_CTRL);
+        Ctrl = GMT_memory_func (GMT, NULL, 1, sizeof(struct MBCONTOUR_CTRL), false, __func__);
 
 	/* Initialize values whose defaults are not 0/false/NULL */
 

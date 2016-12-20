@@ -269,7 +269,7 @@ void *New_mbswath_Ctrl (struct GMT_CTRL *GMT) {	/* Allocate and initialize a new
 	int     dummypings;
 	int     i;
 
-	Ctrl = GMT_memory (GMT, NULL, 1, struct MBSWATH_CTRL);
+	Ctrl = GMT_memory_func (GMT, NULL, 1, sizeof(struct MBSWATH_CTRL), false, __func__);
 
 	/* Initialize values whose defaults are not 0/false/NULL */
 
@@ -749,11 +749,11 @@ int GMT_mbswath (void *V_API, int mode, void *args)
 
         /* allocate and initialize the output image */
 	if (Ctrl->image_type == MBSWATH_IMAGE_8) {
-                Ctrl->bitimage = GMT_memory (GMT, NULL, Ctrl->nm, unsigned char);
+                Ctrl->bitimage = GMT_memory_func (GMT, NULL, Ctrl->nm, sizeof(unsigned char), 0, __func__);
                 memset(Ctrl->bitimage, 255, Ctrl->nm);
 	}
 	else if (Ctrl->image_type == MBSWATH_IMAGE_24) {
-                Ctrl->bitimage = GMT_memory (GMT, NULL, 3 * Ctrl->nm, unsigned char);
+                Ctrl->bitimage = GMT_memory_func (GMT, NULL, 3 * Ctrl->nm, sizeof(unsigned char), 0, __func__);
                 memset(Ctrl->bitimage, 255, 3 * Ctrl->nm);
 	}
                 

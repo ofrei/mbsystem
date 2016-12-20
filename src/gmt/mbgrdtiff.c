@@ -394,7 +394,7 @@ void GMT_mbgrdtiff_set_proj_limits (struct GMT_CTRL *GMT, struct GMT_GRID_HEADER
 void *New_mbgrdtiff_Ctrl (struct GMT_CTRL *GMT) {	/* Allocate and initialize a new control structure */
 	struct MBGRDTIFF_CTRL *Ctrl;
 
-	Ctrl = GMT_memory (GMT, NULL, 1, struct MBGRDTIFF_CTRL);
+	Ctrl = GMT_memory_func (GMT, NULL, 1, sizeof(struct MBGRDTIFF_CTRL), 0, __func__);
 
 	/* Initialize values whose defaults are not 0/false/NULL */
 
@@ -609,7 +609,7 @@ void GMT_mbgrdtiff_set_proj_limits (struct GMT_CTRL *GMT, struct GMT_GRID_HEADER
 
 	/* By default, use entire plot region */
 
-	GMT_memcpy (r->wesn, GMT->current.proj.rect, 4, double);
+	memcpy (r->wesn, GMT->current.proj.rect, 4 * sizeof(double));
 	
 	if (GMT->current.proj.projection == GMT_GENPER && GMT->current.proj.g_width != 0.0) return;
 
@@ -767,7 +767,7 @@ int GMT_mbgrdtiff (void *V_API, int mode, void *args)
 
 	/* Determine what wesn to pass to map_setup */
 
-	if (!GMT->common.R.active && n_grids) GMT_memcpy (GMT->common.R.wesn, Grid_orig[0]->header->wesn, 4, double);
+	if (!GMT->common.R.active && n_grids) memcpy (GMT->common.R.wesn, Grid_orig[0]->header->wesn, 4 * sizeof(double));
 
 	GMT_err_fail (GMT, GMT_map_setup (GMT, GMT->common.R.wesn), "");
 	
@@ -858,7 +858,7 @@ int GMT_mbgrdtiff (void *V_API, int mode, void *args)
 		if (use_intensity_grid) {
 			if ((Intens_proj = GMT_Duplicate_Data (API, GMT_IS_GRID, GMT_DUPLICATE_NONE, Intens_orig)) == NULL) Return (API->error);	/* Just to get a header we can change */
 			if (n_grids)
-				GMT_memcpy (Intens_proj->header->wesn, Grid_proj[0]->header->wesn, 4, double);
+				memcpy (Intens_proj->header->wesn, Grid_proj[0]->header->wesn, 4 * sizeof(double));
 			if (Ctrl->E.dpi == 0) {	/* Use input # of nodes as # of projected nodes */
 				nx_proj = Intens_orig->header->nx;
 				ny_proj = Intens_orig->header->ny;
@@ -876,7 +876,7 @@ int GMT_mbgrdtiff (void *V_API, int mode, void *args)
 	else {	/* Simply set Grid_proj[i]/Intens_proj to point to Grid_orig[i]/Intens_orig */
 		struct GMT_GRID_HEADER tmp_header;
 		for (k = 0; k < n_grids; k++) {	/* Must get a copy so we can change one without affecting the other */
-			GMT_memcpy (&tmp_header, Grid_orig[k]->header, 1, struct GMT_GRID_HEADER);
+			memcpy (&tmp_header, Grid_orig[k]->header, sizeof(struct GMT_GRID_HEADER));
 			Grid_proj[k] = Grid_orig[k];
 			//GMT_mbgrdtiff_set_proj_limits (GMT, Grid_proj[k]->header, &tmp_header, need_to_project);
 		}
@@ -914,19 +914,19 @@ int GMT_mbgrdtiff (void *V_API, int mode, void *args)
 			GMT_Report (API, GMT_MSG_VERBOSE, "Your image is grayscale only but -Q requires 24-bit; image will be converted to 24-bit.\n");
 			gray_only = false;
 			NaN_rgb = red;	/* Arbitrarily pick red as the NaN color since image is gray only */
-			GMT_memcpy (P->patch[GMT_NAN].rgb, red, 4, double);
+			memcpy (P->patch[GMT_NAN].rgb, red, 4 * sizeof(double));
 		}
-		rgb_used = GMT_memory (GMT, NULL, 256*256*256, unsigned char);
+		rgb_used = GMT_memory_func (GMT, NULL, 256*256*256, sizeof(unsigned char), 0, __func__);
 	}
 	if (Ctrl->M.active || gray_only) {
                 image_size = nm;
-		bitimage_8 = GMT_memory (GMT, NULL, image_size, unsigned char);
+		bitimage_8 = GMT_memory_func (GMT, NULL, image_size, sizeof(unsigned char), 0, __func__);
                 tiff_image = bitimage_8;
 	}
 	else {
 		if (Ctrl->Q.active) colormask_offset = 3;
                 image_size = 3 * nm + colormask_offset;
-		bitimage_24 = GMT_memory (GMT, NULL, image_size, unsigned char);
+		bitimage_24 = GMT_memory_func (GMT, NULL, image_size, sizeof(unsigned char), 0, __func__);
 		if (P && Ctrl->Q.active) {
 			for (k = 0; k < 3; k++) bitimage_24[k] = GMT_u255 (P->patch[GMT_NAN].rgb[k]);
 		}
@@ -1046,7 +1046,7 @@ int GMT_mbgrdtiff (void *V_API, int mode, void *args)
 		nx8 = irint (ceil (nx / 8.0));	/* Image width must equal a multiple of 8 bits */
 		nx_pixels = nx8 * 8;
                 image_size = nx8 * ny;
-		bitimage_1 = GMT_memory (GMT, NULL, image_size, unsigned char);
+		bitimage_1 = GMT_memory_func (GMT, NULL, image_size, sizeof(unsigned char), 0, __func__);
                 tiff_image = bitimage_1;
 
 		for (row = k = k8 = 0; row < ny; row++) {

@@ -963,9 +963,7 @@ fprintf(stderr,"MEMORY FAILURE in mbeditviz_load_file\n");
 						ping->beamflag[ibeam] = beamflag[ibeam];
 						ping->beamflagorg[ibeam] = beamflag[ibeam];
 						ping->beamcolor[ibeam] = MBV_COLOR_BLACK;
-						if (!mb_beam_check_flag_null(ping->beamflag[ibeam])
-							&& (isnan(bath[ibeam] || isnan(bathacrosstrack[ibeam] || isnan(bathalongtrack[ibeam])))))
-							
+						if (0)							
 {							ping->beamflag[ibeam] = MB_FLAG_NULL;
 fprintf(stderr,"\nEncountered NaN value in swath data from file: %s\n",swathfile);
 fprintf(stderr,"     Ping time: %4.4d/%2.2d/%2.2d %2.2d:%2.2d:%2.2d.%6.6d\n",
